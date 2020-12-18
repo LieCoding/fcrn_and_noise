@@ -10,14 +10,14 @@ import numpy as np
 
 tf.reset_default_graph()
 
-epoch =700#迭代次数
+epoch =1000#迭代次数
 batch_size = 64
 
 # 超参数,噪声所占比例
 a = 0.5
 
 # 用于二次训练时候 保存的文件名能够接着上次训练的数字保存 
-start_epoch = 800
+start_epoch = 0
 
 
 #选择数据库
