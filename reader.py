@@ -75,11 +75,3 @@ def read_data(data_dir,image_list,output_size=(512, 384), resize_mode=cv.INTER_A
     return image_output, label_output,noise_image_output
 
 
-#     image_output = np.reshape(image_output, [len(image_list), output_size[1], output_size[0], 3])#3通道
-#     label_output = np.reshape(label_output, [len(image_list), output_size[1], output_size[0], 1])#单通道，若label不是单通道需修改
-#     noise_image_output = np.reshape(noise_image_output, [len(image_list), output_size[1], output_size[0],3])
-    
-    return image, label,noise_image
-
-
-
