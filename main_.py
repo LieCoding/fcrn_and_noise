@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Jul 11 20:12:14 2019
-
-@author: hxx
-"""
 
 import tensorflow as tf
 import reader, netStore, cv2, random,os,time
@@ -18,7 +13,7 @@ save_step = 50
 
 a = 0.5
 # 用于断点训练时候 保存文件名 
-start_epoch = 130
+start_epoch = 0
 
 
 #选择数据库
