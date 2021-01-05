@@ -22,21 +22,20 @@ image = tf.placeholder(tf.float32, [None, h, w, 3])
 noise_image = tf.placeholder(tf.float32, [None,h, w, 3])
 label = tf.placeholder(tf.float32, [None, h, w, 1]) 
 
-def get_acc(im1,im2):
- 
+def get_acc(label,im1):
     # print(im1.shape)
-    # 交集 、并集
-    intersection ,union= 0.,0.
+    # 像素准确率 PA(Pixel Accuracy)
+    intersection ,all_pix= 0.,0.
 
-    for i,j in zip(im1,im2):
+    for i,j in zip(im1,label):
         for m,n in zip(i,j):
             if m!=0 and n!=0:
                 intersection+=1
-            if m!=0 or n!=0:
-                union+=1
-#     print(intersection,union,intersection/union)
-
-    return intersection/union
+    for i in label:
+        for m in i:
+            if m!=0:
+                all_pix += 1
+    return intersection/all_pix
 
 
 #获取编码器网络输出
