@@ -17,11 +17,11 @@ batch_size = 64
 a = 0.5
 
 # 用于二次训练时候 保存的文件名能够接着上次训练的数字保存 
-start_epoch = 0
+start_epoch = 2000
 
 
 #选择数据库
-data_dir = 'dataset/train/image'
+data_dir = './dataset/train/image'
 
 # 创建记录保存的图片文件夹
 if not os.path.exists('./record'):
@@ -39,12 +39,12 @@ noise_image = tf.placeholder(tf.float32, [None,h, w, 3])
 label = tf.placeholder(tf.float32, [None, h, w, 1]) 
 
 #获取编码器网络输出
-real_feature,D1,D2,D3 = netStore.net_encoder1(image)
+real_feature = netStore.net_encoder1(image)
 #获取噪声发生器网络输出
 # noise_feature = netStore.net_G_encoder2(noise_image)
 
 # 真特征的检测输出
-real_map  = netStore.net_decoder(real_feature,D1,D2,D3,a)
+real_map  = netStore.net_decoder(real_feature,a)
 # 假特征的检测输出
 # fake_map  = netStore.net_decoder(real_feature,D1,D2,D3,a,noise_feature)
 
@@ -139,5 +139,3 @@ with tf.Session() as sess:
     coord.join(threads)
 #     关闭会话
     sess.close()
-
-    
