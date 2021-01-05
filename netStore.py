@@ -43,7 +43,7 @@ def net_encoder1(image):
         x = slim.conv2d(x, 48, kernel_size=[3,3], stride=1, activation_fn = lrelu)
 #         D3 = x
 #         print('D3',D3.shape)
-        x = slim.conv2d(x, 96, kernel_size=[3,3], stride=2, activation_fn = tf.nn.tanh)
+        x = slim.conv2d(x, 96, kernel_size=[3,3], stride=2, activation_fn = lrelu)
         print(x.shape)
     #  返回最后三层真特征层
     return x
@@ -78,9 +78,9 @@ def net_G_encoder2(image):
 
         x = slim.conv2d(x, 96, kernel_size=[3,3], stride=2, activation_fn = lrelu)
         
-        z1 = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = tf.nn.tanh)
-        z2 = slim.conv2d(z1, 96, kernel_size=[3,3], stride=1, activation_fn = tf.nn.tanh)
-        z3 = slim.conv2d(z2, 96, kernel_size=[3,3], stride=1, activation_fn = tf.nn.tanh)
+        z1 = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = lrelu)
+        z2 = slim.conv2d(z1, 96, kernel_size=[3,3], stride=1, activation_fn = lrelu)
+        z3 = slim.conv2d(z2, 96, kernel_size=[3,3], stride=1, activation_fn = lrelu)
         #  返回最后三层添加噪声后的特征层
     return z1,z2,z3
 
@@ -103,16 +103,16 @@ def net_decoder(x,a,noise_feature=None):
             
             print('z1 and x1:',z1.shape,x.shape)
             x = (1-a)*x + a*z1
-            x = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = tf.nn.tanh)
+            x = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = lrelu)
             x = (1-a)*x + a*z2
-            x = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = tf.nn.tanh)
+            x = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = lrelu)
             x = (1-a)*x + a*z3
-            x = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = tf.nn.tanh)
+            x = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = lrelu)
         else:
              #不融合噪声
-            x = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = tf.nn.tanh)
-            x = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = tf.nn.tanh)
-            x = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = tf.nn.tanh)
+            x = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = lrelu)
+            x = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = lrelu)
+            x = slim.conv2d(x, 96, kernel_size=[3,3], stride=1, activation_fn = lrelu)
     
 # ------------decoder部分------------
         
