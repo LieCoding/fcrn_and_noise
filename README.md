@@ -10,3 +10,5 @@ only_fcrn.py 为了做对比实验，单独使用了FCRN网络训练，
 
 test_net增加了准确率计算方法，test_net_fcrn为FCRN的测试程序
 
+网络结构：![image](https://github.com/LieCoding/fcrn_and_noise/blob/new/net.png)
+
