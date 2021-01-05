@@ -8,7 +8,7 @@ tf.reset_default_graph()
 a = 0
 
 #选择数据库
-data_dir = './image'
+data_dir = './dataset/val/image'
 
 if not os.path.exists('./test_record'):
     os.makedirs('./test_record')
