@@ -17,7 +17,7 @@ batch_size = 64
 a = 0.5
 
 # 用于二次训练时候 保存的文件名能够接着上次训练的数字保存 
-start_epoch = 2000
+start_epoch = 0
 
 
 #选择数据库
