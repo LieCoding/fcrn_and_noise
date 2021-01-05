@@ -1,10 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jul 11 19:27:24 2019
 
-@author: hxx
-"""
 import cv2 as cv
 import numpy as np
 import sys ,os
@@ -28,7 +22,7 @@ def gasuss_noise(image, mean=0, var=0.003):
     noise_image = np.uint8(out*255)
     return noise_image
 
-def read_data(data_dir,image_list,output_size=(512, 384), resize_mode=cv.INTER_AREA):
+def read_data(data_dir,image_list,output_size=(512, 384), resize_mode=cv.INTER_AREA,mean=0, var=0.003):
 
     image_output = []
     label_output = []
@@ -57,11 +51,19 @@ def read_data(data_dir,image_list,output_size=(512, 384), resize_mode=cv.INTER_A
             sys.exit()
     #------------生成添加噪声的图片---------------------------------    
     
-        noise_image = gasuss_noise(image)  
+#         noise_image = gasuss_noise(image)  
+#         生成噪声
+        noise = np.random.normal(mean, var ** 0.5,[output_size[1],output_size[0],1])
+        noise = np.uint8(noise*255)
+        
+#         print(noise.shape)
+        
         image = cv.resize(image, output_size, interpolation=resize_mode)
         label = cv.resize(label, output_size, interpolation=resize_mode)
+        
+#         print(image.shape)
+        noise_image = np.c_[image,noise]
         noise_image = cv.resize(noise_image, output_size, interpolation=resize_mode)
-
         
         image_output.append(image)
         label_output.append(label)
@@ -70,7 +72,7 @@ def read_data(data_dir,image_list,output_size=(512, 384), resize_mode=cv.INTER_A
 
     image_output = np.reshape(image_output, [len(image_list), output_size[1], output_size[0], 3])#3通道
     label_output = np.reshape(label_output, [len(image_list), output_size[1], output_size[0], 1])#单通道，若label不是单通道需修改
-    noise_image_output = np.reshape(noise_image_output, [len(image_list), output_size[1], output_size[0],3])
+    noise_image_output = np.reshape(noise_image_output, [len(image_list), output_size[1], output_size[0],4])
     
     return image_output, label_output,noise_image_output
 
