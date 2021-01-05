@@ -21,7 +21,7 @@ start_epoch = 0
 
 
 #选择数据库
-data_dir = 'train/image'
+data_dir = './dataset/train/image'
 
 # 创建记录保存的图片文件夹
 if not os.path.exists('./record'):
