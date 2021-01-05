@@ -10,7 +10,7 @@ import numpy as np
 
 tf.reset_default_graph()
 
-epoch =1000#迭代次数
+epoch =2000#迭代次数
 batch_size = 64
 
 # 超参数,噪声所占比例
@@ -21,7 +21,7 @@ start_epoch = 0
 
 
 #选择数据库
-data_dir = 'dataset/train/image'
+data_dir = 'train/image'
 
 # 创建记录保存的图片文件夹
 if not os.path.exists('./record'):
@@ -30,23 +30,23 @@ if not os.path.exists('./record'):
 #读取文件夹图片的文件名
 images = reader.read_list(data_dir,file_postfix='jpg')
 
-# 图片的大小
+# 需要输入网络的图片大小，会在读取的时候resize
 h,w = 384, 512
 # 定义占位符
 image = tf.placeholder(tf.float32, [None, h, w, 3]) 
-noise_image = tf.placeholder(tf.float32, [None,h, w, 3])
+noise_image = tf.placeholder(tf.float32, [None,h, w,4])
 # 单通道label
 label = tf.placeholder(tf.float32, [None, h, w, 1]) 
 
 #获取编码器网络输出
-real_feature,D1,D2,D3 = netStore.net_encoder1(image)
+real_feature = netStore.net_encoder1(image)
 #获取噪声发生器网络输出
 noise_feature = netStore.net_G_encoder2(noise_image)
 
 # 真特征的检测输出
-real_map  = netStore.net_decoder(real_feature,D1,D2,D3,a)
+real_map  = netStore.net_decoder(real_feature,a)
 # 假特征的检测输出
-fake_map  = netStore.net_decoder(real_feature,D1,D2,D3,a,noise_feature)
+fake_map  = netStore.net_decoder(real_feature,a,noise_feature)
 
 
 # 解码器的损失函数：
@@ -60,7 +60,7 @@ total_loss = loss_decoder+loss_G+loss_encoder
 #设置学习率
 global_step = tf.Variable(0, trainable=False)  
 # 学习率 指数衰减衰减
-lr = tf.train.exponential_decay(0.001,global_step,1000,0.9,staircase=True)
+lr = tf.train.exponential_decay(0.0005,global_step,1000,0.9,staircase=True)
 
 #设置优化器
 optimizer = tf.train.AdamOptimizer(lr).minimize(total_loss, global_step=global_step)
@@ -110,9 +110,9 @@ with tf.Session() as sess:
 #         喂入网络的数据
         feeds = {image: feed_image, label: feed_label,noise_image:feef_noise_image}
 #         训练网络，获取相关信息
-        _,input_image, input_noise_image,output_real_map,output_fake_map, input_label,\
+        _,input_image,output_real_map,output_fake_map, input_label,\
         decoder_loss_output, encoder_loss_output,G_loss_output, total_loss_output,\
-        learningrate = sess.run([optimizer,image,noise_image,real_map, fake_map,
+        learningrate = sess.run([optimizer,image,real_map, fake_map,
                                  label,loss_decoder,loss_encoder,loss_G,total_loss,lr], feeds)
     
 #           打印当前的损失
@@ -128,7 +128,6 @@ with tf.Session() as sess:
 #         50个epoch保存一次相关图片
         if i%50 == 0:
                 cv2.imwrite('./record/' + str(i+start_epoch) + "_" +  '_image' + '.png' , input_image[0])
-                cv2.imwrite('./record/' + str(i+start_epoch) + "_" +  'input_noise_image' + '.png' , input_noise_image[0])
                 cv2.imwrite('./record/' + str(i+start_epoch) + "_" +  '_label' + '.png' , input_label[0])
                 cv2.imwrite('./record/' + str(i+start_epoch) + "_" +  'output_real_map' + '.png' , output_real_map[0])
                 cv2.imwrite('./record/' + str(i+start_epoch) + "_" +  'output_fake_map' + '.png' , output_fake_map[0])
@@ -139,7 +138,6 @@ with tf.Session() as sess:
         
 #      最后保存一次相关图片       
     cv2.imwrite('./record/' + str(i+start_epoch) + "_" +  '_image' + '.png' , input_image[0])
-    cv2.imwrite('./record/' + str(i+start_epoch) + "_" +  'input_noise_image' + '.png' , input_noise_image[0])
     cv2.imwrite('./record/' + str(i+start_epoch) + "_" +  '_label' + '.png' , input_label[0])
     cv2.imwrite('./record/' + str(i+start_epoch) + "_" +  'output_real_map' + '.png' , output_real_map[0])
     cv2.imwrite('./record/' + str(i+start_epoch) + "_" +  'output_fake_map' + '.png' , output_fake_map[0])
@@ -151,4 +149,3 @@ with tf.Session() as sess:
 #     关闭会话
     sess.close()
 
-    
